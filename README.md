@@ -185,7 +185,7 @@ GET bank/_search
 Aller sur l’onglet Visualize et créer les visuels suivants :
 
 - (Question) Métrique affichant la somme des soldes de tous les comptes. Sauver le graphique.
-![alt text](Images/SommeTotaleSolde.png.png)
+![alt text](Images/SommeTotaleSolde.png)
 
 - (Question) Graphique barre affichant la moyenne des soldes (champ balance) selon l’état (champ state). Sauver le graphique.
 ![alt text](Images/SoldeMoyenParEtat.png)
