@@ -85,8 +85,34 @@ Documentation utile : https://opensearch.org/docs/latest/.
 ## Requêtage simple 
 
 ### INDEX et UPDATE API
-- (Question) Après avoir étudié la structure d’un document, ajouter un nouveau compte dont l’ID est 10001
+- (Question) Après avoir étudié la structure d’un document, ajouter un nouveau compte dont l’ID est 10001 :
+Utilisation d'un PUT pour choisir mon ID de création : par contre si un compte existait déjà avec cet ID il est remplacé
+```json
+PUT bank/_doc/10001
+{
+  "account_number": 10001,
+  "balance": 667,
+  "firstname": "Shawn",
+  "lastname": "P",
+  "age": 23,
+  "gender": "M",
+  "address": "6 Rue des Cerisiers",
+  "employer": "UTLN",
+  "email": "monemail@gmail.com",
+  "city": "Toulon",
+  "state": "FR"
+}
+```
+
 - (Question) Mettre à jour le compte précédent en modifiant l’adresse
+```json
+POST bank/_update/10001
+{
+  "doc" : {
+  "address": "4 Rue du Guacamole"
+  }
+}
+```
 
 ### DELETE API
 - (Question) Supprimer le compte précédemment créé
