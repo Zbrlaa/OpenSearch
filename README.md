@@ -170,14 +170,14 @@ GET bank/_search
 ```json
 GET bank/_search
 {
-  "query": {
-    "bool": {
-      "must": [
-        { "match": { "city": "Belvoir" } },
-        { "match": { "employer": "Xurban" } }
-      ]
-    }
-  }
+	"query": {
+		"bool": {
+			"must": [
+				{ "match": { "city": "Belvoir" } },
+				{ "match": { "employer": "Xurban" } }
+			]
+		}
+	}
 }
 ```
 
@@ -282,7 +282,54 @@ Ca permet unpeu les fautes, ça recherche le plus ressemblant
 Documentation : https://opensearch.org/docs/latest/aggregations/ ou https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations.html (mieux expliqué mais attention à la compatibilité)
 
 - (Question) Trouver le nombre total de pièces (champ play_name)
+```json
+GET shakespeare/_search
+{
+	"size": 0, 
+	"aggs": {
+		"nbpieces": {
+			"cardinality": {
+				"field": "play_name.keyword"
+			}
+		}
+	}
+}
+```
+```json
+"aggregations": {
+	"nbpieces": {
+		"value": 36
+	}
+}
+```
+36 pièces
+
 - (Question) En une requête, calculer le nombre de lignes (champ line_id) pour chaque pièce (champ play_name)
+```json
+GET shakespeare/_search
+{
+  "size": 0,
+  "aggs": {
+    "plays_count": {
+      "terms": {
+        "field": "play_name.keyword",
+        "size": 36
+      }
+    }
+  }
+}
+```
+```json
+{
+	"key": "Hamlet",
+	"doc_count": 4244
+},
+{
+	"key": "Coriolanus",
+	"doc_count": 3992
+}
+...
+```
 
 # Partie 3 - Recherches sémantiques
 
