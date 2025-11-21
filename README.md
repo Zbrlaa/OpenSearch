@@ -85,22 +85,22 @@ Documentation utile : https://opensearch.org/docs/latest/.
 ## Requêtage simple 
 
 ### INDEX et UPDATE API
-- (Question) Après avoir étudié la structure d’un document, ajouter un nouveau compte dont l’ID est 10001 :
+- (Question) Après avoir étudié la structure d’un document, ajouter un nouveau compte dont l’ID est 10001
 Utilisation d'un PUT pour choisir mon ID de création : par contre si un compte existait déjà avec cet ID il est remplacé
 ```json
 PUT bank/_doc/10001
 {
-  "account_number": 10001,
-  "balance": 667,
-  "firstname": "Shawn",
-  "lastname": "P",
-  "age": 23,
-  "gender": "M",
-  "address": "6 Rue des Cerisiers",
-  "employer": "UTLN",
-  "email": "monemail@gmail.com",
-  "city": "Toulon",
-  "state": "FR"
+	"account_number": 10001,
+	"balance": 667,
+	"firstname": "Shawn",
+	"lastname": "P",
+	"age": 23,
+	"gender": "M",
+	"address": "6 Rue des Cerisiers",
+	"employer": "UTLN",
+	"email": "monemail@gmail.com",
+	"city": "Toulon",
+	"state": "FR"
 }
 ```
 
@@ -108,24 +108,64 @@ PUT bank/_doc/10001
 ```json
 POST bank/_update/10001
 {
-  "doc" : {
-  "address": "4 Rue du Guacamole"
-  }
+	"doc" : {
+	"address": "4 Rue du Guacamole"
+	}
 }
 ```
 
 ### DELETE API
 - (Question) Supprimer le compte précédemment créé
+```json
+DELETE bank/_doc/10001
+```
+
 - (Question) Supprimer tous les comptes de la ville de Nicholson (Utiliser _delete_by_query)
+```json
+POST bank/_delete_by_query
+{
+	"query": {
+		"match": {
+			"city": "Nicholson"
+		}
+	}
+}
+```
 
 ### GET API
 - (Question) Obtenir le compte dont l’ID est 2
+```json
+GET bank/_doc/2
+```
+
 - (Question) Idem mais récupérer uniquement le source (champs _source)
+```json
+GET bank/_source/2
+```
+
 - (Question) Idem mais en ne sélectionnant que le nom et le prénom (firstname, lastname)
+```json
+GET bank/_source/2?_source_includes=firstname,lastname
+```
 
 ### SEARCH API
 - (Question) Retrouver tous les comptes
+```json
+GET bank/_search
+```
+
 - (Question) Retrouver tous les comptes dont la ville (champs city) est Belvoir
+```json
+GET bank/_search
+{
+	"query": {
+		"match": {
+			"city": "Belvoir"
+		}
+	}
+}
+```
+
 - (Question) Retrouver tous les comptes dont la ville (champs city) est Belvoir ET l’employeur Xurban
 
 ## Visualisation des données avec OpenSearch Dashboards
@@ -225,27 +265,27 @@ Documentation : https://opensearch.org/docs/latest/search-plugins/neural-search/
 ```
 PUT _cluster/settings
 {
-  "persistent": {
-    "plugins.ml_commons.allow_registering_model_via_url": true
-  }
+	"persistent": {
+		"plugins.ml_commons.allow_registering_model_via_url": true
+	}
 }
 ```
 - Exécuter la requête suivante pour créer un groupe de modèles  et noter le `group_id`
 ```
 POST /_plugins/_ml/model_groups/_register
 {
-  "name": "sentence_transformers",
-  "description": "Groupe pour les modèles sentence transformers"
+	"name": "sentence_transformers",
+	"description": "Groupe pour les modèles sentence transformers"
 }
 ```
 - Exécuter la requête suivante pour télécharger le modèle puis noter le `task_id` (attention à remplacer le `group_id` par la valeur notée précédemment)
 ```
 POST /_plugins/_ml/models/_register
 {
-  "name": "huggingface/sentence-transformers/all-MiniLM-L6-v2",
-  "version": "1.0.1",
-  "model_group_id": "<group_id>",
-  "model_format": "TORCH_SCRIPT"
+	"name": "huggingface/sentence-transformers/all-MiniLM-L6-v2",
+	"version": "1.0.1",
+	"model_group_id": "<group_id>",
+	"model_format": "TORCH_SCRIPT"
 }
 ```
 Une liste de modèles pré-entraînés est disponible ici https://opensearch.org/docs/latest/ml-commons-plugin/pretrained-models/
@@ -262,50 +302,50 @@ POST /_plugins/_ml/models/<model_id>/_deploy
 ```
 PUT _ingest/pipeline/news-nlp-pipeline
 {
-  "description": "Pipeline calculant l'embedding sur le texte du champ 'short description'",
-  "processors" : [
-    {
-      "text_embedding": {
-        "model_id": "<model_id>",
-        "field_map": {
-           "short_description": "text_embedding"
-        }
-      }
-    }
-  ]
+	"description": "Pipeline calculant l'embedding sur le texte du champ 'short description'",
+	"processors" : [
+		{
+			"text_embedding": {
+				"model_id": "<model_id>",
+				"field_map": {
+					"short_description": "text_embedding"
+				}
+			}
+		}
+	]
 }
 ```
 - Créer le mapping qui permet d'indiquer comment chaque champ doit être indexé. Noter que le champ `short_description` est de type texte. Grâce à l'étape précédente, le champ `text_embedding`, contenant l'_embedding_ de la description sera automatiquement créé.
 ```
 PUT /news
 {
-  "settings": {
-    "index.knn": true,
-    "default_pipeline": "news-nlp-pipeline"
-  },
-  "mappings": {
-    "properties": {
-      "text_embedding": {
-        "type": "knn_vector",
-        "dimension": 384,
-        "method": {
-          "name": "hnsw",
-          "space_type": "l2",
-          "engine": "nmslib",
-          "parameters": {
-            "ef_construction": 128,
-            "m": 24
-          }
-        }
-      },
-      "link": { "type": "keyword" },
-      "headline": { "type": "text" },
-      "category": { "type": "keyword" },
-      "short_description": { "type": "text" },
-      "authors": { "type": "keyword" },
-      "date": { "type": "date" }
-    }
-  }
+	"settings": {
+		"index.knn": true,
+		"default_pipeline": "news-nlp-pipeline"
+	},
+	"mappings": {
+		"properties": {
+			"text_embedding": {
+				"type": "knn_vector",
+				"dimension": 384,
+				"method": {
+					"name": "hnsw",
+					"space_type": "l2",
+					"engine": "nmslib",
+					"parameters": {
+						"ef_construction": 128,
+						"m": 24
+					}
+				}
+			},
+			"link": { "type": "keyword" },
+			"headline": { "type": "text" },
+			"category": { "type": "keyword" },
+			"short_description": { "type": "text" },
+			"authors": { "type": "keyword" },
+			"date": { "type": "date" }
+		}
+	}
 }
 ```
 
@@ -323,17 +363,17 @@ En vous aidant de l'exemple ci-dessus et en remplaçant les parties entre chevro
 ```
 GET <index>/_search?size=10
 {
-  "query": {
-    "neural": {
-      "<embedding_field>": {
-        "query_text": "Requête en langage naturel",
-        "model_id": "<model_id>",
-        "k": 10
-      }
-    }
-  },
-  "fields": ["liste des champs à afficher"],
-  "_source": false
+	"query": {
+		"neural": {
+			"<embedding_field>": {
+				"query_text": "Requête en langage naturel",
+				"model_id": "<model_id>",
+				"k": 10
+			}
+		}
+	},
+	"fields": ["liste des champs à afficher"],
+	"_source": false
 }
 ```
 
