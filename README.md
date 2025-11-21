@@ -167,18 +167,39 @@ GET bank/_search
 ```
 
 - (Question) Retrouver tous les comptes dont la ville (champs city) est Belvoir ET l’employeur Xurban
+```json
+GET bank/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "city": "Belvoir" } },
+        { "match": { "employer": "Xurban" } }
+      ]
+    }
+  }
+}
+```
 
 ## Visualisation des données avec OpenSearch Dashboards
 Aller sur l’onglet Visualize et créer les visuels suivants :
 
 - (Question) Métrique affichant la somme des soldes de tous les comptes. Sauver le graphique.
+![alt text](Images/SommeTotaleSolde.png.png)
+
 - (Question) Graphique barre affichant la moyenne des soldes (champ balance) selon l’état (champ state). Sauver le graphique.
+![alt text](Images/SoldeMoyenParEtat.png)
+
 - (Question) Nuage de mots représentant les villes dans lesquelles il y a le plus de comptes. Sauver le graphique.
+![alt text](Images/VilleParNombreDeCompte.png)
 
 Rendez-vous ensuite sur l’onglet Dashboard puis : 
 
 - (Question) Réaliser un tableau de bord regroupant les 3 visuels précédents.
+![alt text](Images/Dashboard.png.png)
+
 - (Question) Exécuter une requête dans la barre de recherche situé au dessus et remarquez que les visuels se mettent automatiquement à jour.
+![alt text](Images/DashboardAdelino.png.png)
 
 # Partie 2 - Gestion de documents textuels
 
