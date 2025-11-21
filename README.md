@@ -332,6 +332,10 @@ GET shakespeare/_search
 ```
 
 # Partie 3 - Recherches sémantiques
+"model_group_id": "QWxnppoBDuZyphFZZqil"
+"task_id": "RWxnppoBDuZyphFZw6is"
+"model_id": "SWxnppoBDuZyphFZx6g-"
+
 
 Les recherches réalisées précédemment sont principalement des recherches par mots ou par phrases basés sur le modèle `tf-idf`. Ce dernier construit un espace vectoriel dont la taille est égal au nombre total de tokens distincts dans la collection de documents. L'image ci-dessous représente un espace vectoriel avec 3 tokens distincts. Imaginez ce que cela donnerait avec 100,000 tokens distincts !
 
