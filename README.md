@@ -231,21 +231,51 @@ Vous pouvez répondre à toutes les questions en utilisant cett syntaxe :
 ```
 GET shakespeare/_search?q=query OR champ:query
 ```
-<<<<<<< HEAD
-
-=======
->>>>>>> 13aa1ea (Mise à jour 2025-2026 avec OS 3 et recherches sémantiques.)
 
 - (Question) Rechercher les documents contenant le terme KING dans les champs text_entry OU playname. Accordez deux fois plus d’importance aux documents qui contiennent le terme dans le champ play_name (astuce : KING^2).
+```json
+GET shakespeare/_search?q=text_entry:KING OR play_name:KING^2
+```
+
 - (Question) Rechercher les documents où l’orateur (champ speaker) CAESAR parle de Brutus (champ text_entry)
+```json
+GET shakespeare/_search?q=speaker:CAESAR AND text_entry:Brutus
+```
+
 - (Question) Rechercher les documents où l’orateur(champ speaker) CAESAR ne parle PAS de Brutus (champ text_entry)
+```json
+GET shakespeare/_search?q=speaker:CAESAR AND NOT text_entry:Brutus
+```
+
 - (Question) Rechercher les documents répondant à la requête `caesar brutus calpurnia`
+```json
+GET shakespeare/_search?q=caesar brutus calpurnia
+```
+
 - (Question) Selon vous, pourquoi le quatrième document, qui contient tous les termes, n’est pas en première position ?
+Je pense que la priorité de recherche est basé sur l'ordre d'apparition d'un des mots clefs (proximité)
+
 - (Question) Modifier la requête pour que seul le quatrième document réponde.
+```json
+GET shakespeare/_search?q=caesar AND brutus AND calpurnia
+```
+
 - (Question) Rechercher les documents répondant à la requête cesar (la faute est volontaire)
+```json
+GET shakespeare/_search?q=ceasar
+```
+
 - (Question) Pourquoi aucun document ne répond ?
-- (Question) Essayez maintenant avec la requête cesar~ 
+Surement car la recherche match uniquement les mots entiers
+
+- (Question) Essayez maintenant avec la requête cesar~
+```json
+GET shakespeare/_search?q=ceasar
+```
+3412 résultats
+
 - (Question) En déduire le rôle de l’opérateur ~
+Ca permet unpeu les fautes, ça recherche le plus ressemblant
 
 ### AGGREGATION API
 
