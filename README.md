@@ -196,10 +196,10 @@ Aller sur l’onglet Visualize et créer les visuels suivants :
 Rendez-vous ensuite sur l’onglet Dashboard puis : 
 
 - (Question) Réaliser un tableau de bord regroupant les 3 visuels précédents.
-![alt text](Images/Dashboard.png.png)
+![alt text](Images/Dashboard.png)
 
 - (Question) Exécuter une requête dans la barre de recherche situé au dessus et remarquez que les visuels se mettent automatiquement à jour.
-![alt text](Images/DashboardAdelino.png.png)
+![alt text](Images/DashboardAdelino.png)
 
 # Partie 2 - Gestion de documents textuels
 
