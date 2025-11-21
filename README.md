@@ -1,5 +1,7 @@
 # Introduction
 
+sudo chown user:user -R docker/opensearch/data
+
 Dans ce TP, vous allez installer la suite ELK (Elasticsearch, Logstash, Kibana) dans sa version open source : **OpenSearch**. Le coeur de cette suite est OpenSearch (fork Elasticsearch), une base NoSQL orientée document mais aussi un moteur de recherche puissant qui est de plus en plus utilisé dans l’industrie ; non seulement pour ses capacités de recherche mais aussi pour ses fonctionnalités de Business Intelligence (BI).
 
 Vous allez travailler sur des données factices représentant des comptes bancaires, des textes de Shakespeare et des news. A l’issue de ce TP, vous serez capable de :
@@ -308,15 +310,15 @@ GET shakespeare/_search
 ```json
 GET shakespeare/_search
 {
-  "size": 0,
-  "aggs": {
-    "plays_count": {
-      "terms": {
-        "field": "play_name.keyword",
-        "size": 36
-      }
-    }
-  }
+	"size": 0,
+	"aggs": {
+		"plays_count": {
+			"terms": {
+				"field": "play_name.keyword",
+				"size": 36
+			}
+		}
+	}
 }
 ```
 ```json
@@ -332,9 +334,9 @@ GET shakespeare/_search
 ```
 
 # Partie 3 - Recherches sémantiques
-"model_group_id": "QWxnppoBDuZyphFZZqil"
+"model_group_id": "wzmrppoBrwo_i09pCxdp"
 "task_id": "RWxnppoBDuZyphFZw6is"
-"model_id": "SWxnppoBDuZyphFZx6g-"
+"model_id": "xzmuppoBrwo_i09pZRd-"
 
 
 Les recherches réalisées précédemment sont principalement des recherches par mots ou par phrases basés sur le modèle `tf-idf`. Ce dernier construit un espace vectoriel dont la taille est égal au nombre total de tokens distincts dans la collection de documents. L'image ci-dessous représente un espace vectoriel avec 3 tokens distincts. Imaginez ce que cela donnerait avec 100,000 tokens distincts !
@@ -462,7 +464,7 @@ Le jeu de données est un ensemble de `210,294` news entre 2012 et 2022 au forma
 
 En vous aidant de l'exemple ci-dessus et en remplaçant les parties entre chevrons `<>`, répondre aux questions suivantes.
 
-```
+```json
 GET <index>/_search?size=10
 {
 	"query": {
@@ -480,7 +482,51 @@ GET <index>/_search?size=10
 ```
 
 - (Question) Rechercher "Usage of artificial intelligence in medicine". Afficher les champs `headline`, `short_description`, `date` et `link`.
+```json
+GET news/_search?size=10
+{
+	"query": {
+		"neural": {
+			"text_embedding": {
+				"query_text": "Usage of artificial intelligence in medicine",
+				"model_id": "xzmuppoBrwo_i09pZRd-",
+				"k": 10
+			}
+		}
+	},
+	"fields": [
+		"headline",
+		"short_description",
+		"date",
+		"link"
+	],
+	"_source": false
+}
+```
+
 - (Question) Rechercher les articles similaires à celui-ci https://www.huffpost.com/entry/15-comedy-documentaries-worth-watching-on-netflix-photos_n_1619966. Copier / coller le début de l'article dans la requête.
+```json
+GET news/_search?size=10
+{
+	"query": {
+		"neural": {
+			"text_embedding": {
+				"query_text": "15 Comedy Documentaries Worth Watching On Netflix (PHOTOS)\nNetflix, to its credit, has a phenomenal archive of documentaries available to watch whenever you want. Even better, they have some really interesting comedy-related documentaries available to watch whenever you want. These movies take a poignant look at such comedy legends as Bill Hicks, Conan O'Brien, Woody Allen, Joan Rivers and more and make for great summer movie marathon-ing.\nWith that in mind, and because going to the beach is totally overrated, we put together a list of 15 of the best comedy documentaries available on Netflix Instant. So, what are you waiting for? Plant yourself on the couch, crank up that A.C. and get to watching!",
+				"model_id": "xzmuppoBrwo_i09pZRd-",
+				"k": 10
+			}
+		}
+	},
+	"fields": [
+		"headline",
+		"short_description",
+		"date",
+		"link"
+	],
+	"_source": false
+}
+```
+
 
 # Partie 4 - Pour aller plus loin : Logstash
 Logstash est un formidable outil pour le traitement et l’ingestion de données, notamment dans OpenSearch.
